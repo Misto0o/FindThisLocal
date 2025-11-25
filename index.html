@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FindThisLocal</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link rel="icon" type="image/x-icon" href="FindThisLocalIcons/favicon.ico">
+    <link rel="manifest" href="manifest.json" />
+</head>
+
+<body>
+    <div id="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h1>FindThisLocal</h1>
+                <p class="subtitle">Discover real local minority businesses powered by Yelp</p>
+            </div>
+            <div class="controls">
+                <div class="control-row">
+                    <label class="inline" style="flex: 1;">
+                        <span>I'm looking for:</span>
+                        <select id="keywordInput" style="flex: 1;">
+                            <option value="Black-owned">Black-owned businesses</option>
+                            <option value="Latino-owned">Latino-owned businesses</option>
+                            <option value="Asian-owned">Asian-owned businesses</option>
+                            <option value="Women-owned">Women-owned businesses</option>
+                            <option value="LGBTQ-owned">LGBTQ-owned businesses</option>
+                            <option value="Veteran-owned">Veteran-owned businesses</option>
+                            <option value="Native American-owned">Native American-owned businesses</option>
+                            <option value="minority-owned">All minority-owned businesses</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label class="inline">
+                        <span>Location:</span>
+                        <input id="locationInput" type="text" placeholder="City or ZIP" />
+                    </label>
+                    <button id="useMyLocation" class="button">📍 Use GPS</button>
+                </div>
+                <div class="control-row">
+                    <label class="inline">
+                        <span>Category:</span>
+                        <select id="categoryFilter">
+                            <option value="all">All</option>
+                            <option value="Food">Food</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Services">Services</option>
+                            <option value="Beauty">Beauty</option>
+                            <option value="Education">Education</option>
+                            <option value="Health">Health</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </label>
+                    <label class="inline">
+                        <span>Radius:</span>
+                        <select id="radiusSelect">
+                            <option value="1609">1 mi</option>
+                            <option value="8047">5 mi</option>
+                            <option value="16093" selected>10 mi</option>
+                            <option value="32186">20 mi</option>
+                        </select>
+                    </label>
+                </div>
+                <button id="searchBtn" class="primary">🔍 Search</button>
+            </div>
+            <div class="sidebar-section">
+                <h3>Results (<span id="resultCount">0</span>)</h3>
+                <ul id="businessList" class="card-list"></ul>
+                <div id="pagination" class="pagination"></div>
+            </div>
+            <div class="sidebar-section about">
+                <h3>About</h3>
+                <p>Discover minority-owned businesses using real data from Yelp.</p>
+                <p>Email to add a business: <a
+                        href="mailto:hello@minorityfinder.example">hello@FindThisLocal.example</a></p>
+            </div>
+            <button id="openAddBizModal" class="primary">➕ Add Your Business</button>
+
+            <!-- Add Business Modal -->
+            <div id="addBizModal" class="modal hidden">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <button class="modal-close" id="addBizModalClose" aria-label="Close">×</button>
+                    <div id="addBizModalBody" class="modal-body"></div>
+                </div>
+            </div>
+    </div>
+    </aside>
+
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
+    <button id="mobileSidebarToggle" class="mobile-toggle">☰ Menu</button>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+    <script src="service-worker.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEfCH1Ae5ybESaZwpBQlCJ4EUt6wy0ZKE",
+            authDomain: "findthislocaldb.firebaseapp.com",
+            projectId: "findthislocaldb",
+            storageBucket: "findthislocaldb.firebasestorage.app",
+            messagingSenderId: "524976503992",
+            appId: "1:524976503992:web:e0de88522eaead92e6484d",
+            measurementId: "G-L4JFDWE2R3"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</body>
+
+</html>
