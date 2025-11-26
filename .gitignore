@@ -1,4 +1,5 @@
-node_modules
-yarn.lock
-.yarn
+node_modules/
+.yarn/
 .yarnrc.yml
+yarn.lock
+package.json

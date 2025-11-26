@@ -5,25 +5,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FindThisLocal</title>
+
     <link rel="stylesheet" href="styles.css" />
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
     <link rel="icon" type="image/x-icon" href="FindThisLocalIcons/favicon.ico">
     <link rel="manifest" href="manifest.json" />
 </head>
 
 <body>
     <div id="app-container">
+        <!-- SIDEBAR -->
         <aside id="sidebar">
             <div class="sidebar-header">
                 <h1>FindThisLocal</h1>
                 <p class="subtitle">Discover real local minority businesses powered by Yelp</p>
             </div>
+
             <div class="controls">
                 <div class="control-row">
-                    <label class="inline" style="flex: 1;">
+                    <label class="inline" style="flex:1;">
                         <span>I'm looking for:</span>
-                        <select id="keywordInput" style="flex: 1;">
+                        <select id="keywordInput" style="flex:1;">
                             <option value="Black-owned">Black-owned businesses</option>
                             <option value="Latino-owned">Latino-owned businesses</option>
                             <option value="Asian-owned">Asian-owned businesses</option>
@@ -32,9 +36,18 @@
                             <option value="Veteran-owned">Veteran-owned businesses</option>
                             <option value="Native American-owned">Native American-owned businesses</option>
                             <option value="minority-owned">All minority-owned businesses</option>
+                            <option value="custom">Custom Search...</option>
                         </select>
                     </label>
                 </div>
+
+                <div id="customSearchRow" class="control-row" style="display: none;">
+                    <label class="inline" style="flex:1;">
+                        <span>Search for:</span>
+                        <input id="customKeywordInput" type="text" placeholder="e.g., pizza, hair salon, coffee shop" />
+                    </label>
+                </div>
+
                 <div class="control-row">
                     <label class="inline">
                         <span>Location:</span>
@@ -42,6 +55,7 @@
                     </label>
                     <button id="useMyLocation" class="button">📍 Use GPS</button>
                 </div>
+
                 <div class="control-row">
                     <label class="inline">
                         <span>Category:</span>
@@ -57,6 +71,7 @@
                             <option value="Art">Art</option>
                         </select>
                     </label>
+
                     <label class="inline">
                         <span>Radius:</span>
                         <select id="radiusSelect">
@@ -67,20 +82,36 @@
                         </select>
                     </label>
                 </div>
+
                 <button id="searchBtn" class="primary">🔍 Search</button>
             </div>
-            <div class="sidebar-section">
-                <h3>Results (<span id="resultCount">0</span>)</h3>
-                <ul id="businessList" class="card-list"></ul>
-                <div id="pagination" class="pagination"></div>
+
+            <div id="tab-custom" class="tab-content">
+                <button id="openAddBizModal" class="primary">➕ Add Your Business</button>
+                <ul id="customBusinessList" class="card-list"></ul>
             </div>
+
+            <!-- Tabs -->
+            <div id="tabs">
+                <button class="tab-btn active" data-tab="yelp">Yelp Results</button>
+                <button class="tab-btn" data-tab="custom">Your Businesses</button>
+            </div>
+
+            <div id="tab-yelp" class="tab-content active">
+                <div class="sidebar-section">
+                    <h3>Results (<span id="resultCount">0</span>)</h3>
+                    <ul id="businessList" class="card-list"></ul>
+                    <div id="pagination" class="pagination"></div>
+                </div>
+            </div>
+
             <div class="sidebar-section about">
                 <h3>About</h3>
                 <p>Discover minority-owned businesses using real data from Yelp.</p>
-                <p>Email to add a business: <a
-                        href="mailto:hello@minorityfinder.example">hello@FindThisLocal.example</a></p>
+                <p>Email to add a business:
+                    <a href="mailto:hello@FindThisLocal.example">hello@FindThisLocal.example</a>
+                </p>
             </div>
-            <button id="openAddBizModal" class="primary">➕ Add Your Business</button>
 
             <!-- Add Business Modal -->
             <div id="addBizModal" class="modal hidden">
@@ -90,16 +121,17 @@
                     <div id="addBizModalBody" class="modal-body"></div>
                 </div>
             </div>
-    </div>
-    </aside>
+        </aside>
 
-    <div id="map-container">
-        <div id="map"></div>
-    </div>
-    <button id="mobileSidebarToggle" class="mobile-toggle">☰ Menu</button>
+        <!-- MAP -->
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+
+        <button id="mobileSidebarToggle" class="mobile-toggle">☰ Menu</button>
     </div>
 
-    <!-- Modal -->
+    <!-- Global Modal -->
     <div id="modal" class="modal hidden">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
@@ -107,17 +139,16 @@
             <div id="modalBody" class="modal-body"></div>
         </div>
     </div>
+
+    <!-- JS -->
     <script type="module" src="app.js"></script>
     <script src="service-worker.js"></script>
+
+    <!-- Firebase -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
 
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
             apiKey: "AIzaSyBEfCH1Ae5ybESaZwpBQlCJ4EUt6wy0ZKE",
             authDomain: "findthislocaldb.firebaseapp.com",
@@ -128,10 +159,10 @@
             measurementId: "G-L4JFDWE2R3"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
     </script>
+
 </body>
 
 </html>

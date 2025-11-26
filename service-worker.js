@@ -1,4 +1,4 @@
-const CACHE_NAME = "find-this-local-cache-v1";
+const CACHE_NAME = "find-this-local-cache-v2";
 const urlsToCache = [
     "./",
     "./index.html",
@@ -6,7 +6,8 @@ const urlsToCache = [
     "./app.js",
     "./privacy.html",
     "./manifest.json",
-    "FindThisLocalIcons/favicon.ico"
+    "FindThisLocalIcons/favicon.ico",
+    "src/firebaseActions.js"
 ];
 
 self.addEventListener("install", event => {
