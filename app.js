@@ -1,3 +1,4 @@
+// Built By Kristian Cook - https://builtbykristian.netlify.app - MIT License
 import { addCustomBusiness, getCustomBusinesses } from "./src/firebaseActions.js";
 
 // Initialize when window loads
