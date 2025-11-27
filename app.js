@@ -43,6 +43,42 @@ function initApp() {
     const mobileToggle = document.getElementById("mobileSidebarToggle");
     const sidebar = document.getElementById("sidebar");
 
+    const readmeModal = document.getElementById('readme-modal');
+    const readmeContent = document.getElementById('readme-content');
+    const closeBtn = document.getElementById('close-btn');
+    const openReadmeBtn = document.getElementById('openReadmeBtn');
+
+    // Function to open modal
+    function openReadmeModal() {
+        readmeModal.style.display = 'flex';
+        loadReadMe();
+    }
+    window.openReadmeModal = openReadmeModal;
+
+    // Attach click to sidebar link
+    openReadmeBtn.addEventListener('click', openReadmeModal);
+
+    // Close modal when clicking X
+    closeBtn.addEventListener('click', () => readmeModal.style.display = 'none');
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target === readmeModal) readmeModal.style.display = 'none';
+    });
+
+    function loadReadMe() {
+        fetch('./README.md') // relative path to root
+            .then(response => response.text())
+            .then(data => {
+                const converter = new showdown.Converter();
+                readmeContent.innerHTML = converter.makeHtml(data);
+            })
+            .catch(error => {
+                console.error(error);
+                readmeContent.innerHTML = '<p>Error loading ReadMe content.</p>';
+            });
+    }
+
     // Utilities
     function createEl(tag, attrs = {}, children = []) {
         const el = document.createElement(tag);
@@ -180,7 +216,7 @@ function initApp() {
     function renderBusinessList() {
         // 🔥 FIXED: Use correct list container based on active tab
         const listContainer = activeTab === "custom" ? customBusinessList : businessList;
-        
+
         listContainer.innerHTML = "";
         const selectedCategory = categoryFilter.value;
         const filtered = currentBusinesses.filter((b) => selectedCategory === "all" || b.category === selectedCategory);
@@ -265,37 +301,46 @@ function initApp() {
     document.getElementById("modalClose").addEventListener("click", closeModal);
     modalEl.querySelector(".modal-backdrop").addEventListener("click", closeModal);
 
-    function openAddBizModal() {
+    async function openAddBizModal() {
         addBizModalBody.innerHTML = `
         <h3>Add Your Business</h3>
         <div class="modal-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <label>
                 Business Name
-                <input type="text" id="modalBizName" placeholder="Ben's Boyz Premium Comfort" />
+                <input type="text" id="modalBizName" placeholder="Example Businuess Name" />
             </label>
             
             <label>
-                Category
-                <select id="modalBizCategory">
-                    <option value="Food">Food</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Services">Services</option>
-                    <option value="Beauty">Beauty</option>
-                    <option value="Education">Education</option>
-                    <option value="Health">Health</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Art">Art</option>
+                Ownership Type
+                <select id="modalBizOwnership">
+                    <option value="Black-owned">Black-owned</option>
+                    <option value="Latino-owned">Latino-owned</option>
+                    <option value="Asian-owned">Asian-owned</option>
+                    <option value="Women-owned">Women-owned</option>
+                    <option value="LGBTQ-owned">LGBTQ-owned</option>
+                    <option value="Veteran-owned">Veteran-owned</option>
+                    <option value="Native American-owned">Native American-owned</option>
+                    <option value="minority-owned">Minority-owned</option>
                 </select>
+            </label>
+            
+            <label style="grid-column: 1 / -1;">
+                Business Category
+                <input 
+                    type="text" 
+                    id="modalBizCategory" 
+                    placeholder="restaurant, hair salon, gym, clothing store, auto repair, hotel, wedding planning..."
+                />
             </label>
             
             <label>
                 Address
-                <input type="text" id="modalBizAddress" placeholder="2711 Grandview Ave, Greensboro, NC" />
+                <input type="text" id="modalBizAddress" placeholder="234 Greenville Testing Lane" />
             </label>
             
             <label>
                 Phone
-                <input type="tel" id="modalBizPhone" placeholder="(336) 907-8161" />
+                <input type="tel" id="modalBizPhone" placeholder="(123) 456-7890" />
             </label>
             
             <label style="grid-column: 1 / -1;">
@@ -315,7 +360,7 @@ function initApp() {
             
             <label style="grid-column: 1 / -1;">
                 Hours (one per line)
-                <textarea id="modalBizHours" rows="4" placeholder="Mon: 11:00 - 16:00
+                <textarea id="modalBizHours" rows="4" placeholder= "Mon: 11:00 - 16:00
 Tue: 11:00 - 16:00
 Wed: 11:00 - 16:00
 Thu: 11:00 - 21:00
@@ -332,6 +377,7 @@ Sun: Closed"></textarea>
             <button id="submitBizBtn" class="primary" style="grid-column: 1 / -1;">➕ Add Business</button>
         </div>
     `;
+
         addBizModal.classList.remove("hidden");
 
         // 🔥 Image upload handling
@@ -343,18 +389,18 @@ Sun: Closed"></textarea>
         function handleFiles(files) {
             const fileArray = Array.from(files).slice(0, 6); // Max 6 images
             selectedImages = fileArray;
-            
+
             imagePreview.innerHTML = "";
             fileArray.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const container = document.createElement("div");
                     container.style.cssText = "position: relative; border-radius: 8px; overflow: hidden; border: 2px solid #30363d;";
-                    
+
                     const img = document.createElement("img");
                     img.src = e.target.result;
                     img.style.cssText = "width: 100%; height: 80px; object-fit: cover; display: block;";
-                    
+
                     const removeBtn = document.createElement("button");
                     removeBtn.textContent = "×";
                     removeBtn.style.cssText = "position: absolute; top: 2px; right: 2px; background: #da3633; color: white; border: none; border-radius: 4px; width: 20px; height: 20px; cursor: pointer; font-size: 16px; line-height: 1;";
@@ -362,7 +408,7 @@ Sun: Closed"></textarea>
                         selectedImages.splice(index, 1);
                         container.remove();
                     };
-                    
+
                     container.appendChild(img);
                     container.appendChild(removeBtn);
                     imagePreview.appendChild(container);
@@ -461,7 +507,6 @@ Sun: Closed"></textarea>
 
                 // 🔥 FIXED: If we're on the custom tab, update the view immediately
                 if (activeTab === "custom") {
-                    currentBusinesses.push(bizWithId);
                     renderBusinessList();
                     addMarker(bizWithId);
                     fitMapToBounds(currentBusinesses);
@@ -470,7 +515,7 @@ Sun: Closed"></textarea>
                 // Close modal
                 addBizModal.classList.add("hidden");
                 alert("✅ Business added successfully!");
-                
+
                 // 🔥 FIXED: Auto-switch to "Your Business" tab to show the new business
                 if (activeTab !== "custom") {
                     // Find and click the "Your Businesses" tab button
@@ -555,7 +600,7 @@ Sun: Closed"></textarea>
             // 🔥 FIXED: Update currentBusinesses and view
             currentBusinesses = yelpBusinesses;
             activeTab = "yelp";
-            
+
             renderBusinessList();
             currentBusinesses.forEach(addMarker);
             if (!loadMore && currentBusinesses.length) fitMapToBounds(currentBusinesses);
@@ -632,6 +677,42 @@ Sun: Closed"></textarea>
     mobileToggle.addEventListener("click", () => {
         sidebar.classList.toggle("open");
         mobileToggle.textContent = sidebar.classList.contains("open") ? "✕ Close" : "☰ Menu";
+    });
+
+    let startY = 0;
+    let currentY = 0;
+    let touchingSidebar = false;
+
+    sidebar.addEventListener("touchstart", (e) => {
+        if (!sidebar.classList.contains("open")) return; // only when open
+        if (!addBizModal.classList.contains("hidden") || readmeModal.style.display === 'flex') return; // ignore swipe if modal is open        startY = e.touches[0].clientY;
+        touchingSidebar = true;
+    });
+
+    sidebar.addEventListener("touchmove", (e) => {
+        if (!touchingSidebar) return;
+        if (!addBizModal.classList.contains("hidden") || readmeModal.style.display === 'flex') return; // ignore swipe if modal is open        currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
+
+        if (deltaY > 0) {
+            e.preventDefault();
+            sidebar.style.transform = `translateY(${deltaY}px)`;
+        }
+    }, { passive: false }); // <-- must be passive: false to cancel scroll
+
+    sidebar.addEventListener("touchend", () => {
+        touchingSidebar = false;
+        const deltaY = currentY - startY;
+        if (!addBizModal.classList.contains("hidden") || readmeModal.style.display === 'flex') return; // ignore swipe if modal is open
+
+        if (deltaY > 125) {
+            // swipe down far enough → close sidebar
+            sidebar.classList.remove("open");
+            mobileToggle.textContent = "☰ Menu";
+        }
+
+        // Reset transform
+        sidebar.style.transform = "";
     });
 
     document.addEventListener("keydown", (e) => {

@@ -24,7 +24,7 @@
     <meta property="og:description"
         content="Search and support minority-owned businesses with real Yelp data plus custom community listings." />
     <meta property="og:image" content="https://findthislocal.org/FindThisLocalIcons/preview.png" />
-      <meta name="author" content="Kristian Cook">
+    <meta name="author" content="Kristian Cook">
 
     <!-- Icons -->
     <link rel="icon" href="FindThisLocalIcons/favicon.ico" />
@@ -39,6 +39,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
 
     <!-- Google Tag Manager (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L4JFDWE2R3"></script>
@@ -145,8 +146,23 @@
                 <h3>About</h3>
                 <p>Discover minority-owned businesses using real data from Yelp.</p>
                 <p>Email to add a business:
-                    <a href="mailto:hello@FindThisLocal.example">hello@FindThisLocal.example</a>
+                    <a href="mailto:tea.why43@gmail.com">tea.why43@gmail.com</a>
                 </p>
+                <p>
+                    <a href="javascript:void(0)" id="openReadmeBtn" class="help-link">
+                        How to Use This App / Help
+                    </a>
+                </p>
+            </div>
+
+            <!-- ReadMe Modal -->
+            <div id="readme-modal"
+                style="display:none; position:fixed; inset:0; justify-content:center; align-items:center; background:rgba(255, 255, 255, 0.5); z-index:1000;">
+                <div id="readme-content"
+                    style="background:#ffffff; padding:20px; border-radius:8px; max-height:80vh; overflow-y:auto; width:90%; max-width:800px; text-align:center;">
+                    <!-- ReadMe content will be injected here -->
+                </div>
+                <button id="close-btn" style="position:absolute; top:10px; right:10px; font-size:20px;">×</button>
             </div>
 
             <!-- Add Business Modal -->

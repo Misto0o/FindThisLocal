@@ -1,4 +1,4 @@
-const CACHE_NAME = "find-this-local-cache-v2";
+const CACHE_NAME = "find-this-local-cache-v4";
 const urlsToCache = [
     "./",
     "./index.html",
