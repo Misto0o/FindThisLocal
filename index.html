@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FindThisLocal — Discover Minority-Owned Businesses Near You</title>
+    <meta name="title" content="FindThisLocal — Discover Minority-Owned Businesses Near You" />
+    <meta name="description"
+        content="FindThisLocal helps you easily search, discover, and support minority-owned businesses around you using live Google data and community-submitted listings." />
+    <meta name="keywords"
+        content="minority-owned, black-owned, latino-owned, asian-owned, women-owned, lgbtq-owned, local business, small business, Greensboro NC, FindThisLocal" />
+    <meta name="author" content="FindThisLocal" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://findthislocal.org/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://findthislocal.org/" />
+    <meta property="og:title" content="FindThisLocal — Discover Minority-Owned Businesses Near You" />
+    <meta property="og:description"
+        content="Search and support minority-owned businesses with real Google data plus custom community listings." />
+    <meta property="og:image" content="https://findthislocal.org/FindThisLocalIcons/preview.png" />
+    <meta name="author" content="Kristian Cook">
+
+    <!-- Icons -->
+    <link rel="icon" href="FindThisLocalIcons/favicon.ico" />
+    <link rel="apple-touch-icon" href="FindThisLocalIcons/android-chrome-192x192.png" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+
+    <!-- Google Tag Manager (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L4JFDWE2R3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-L4JFDWE2R3');
+    </script>
+</head>
+
+<body>
+    <div id="app-container">
+        <!-- SIDEBAR -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h1>FindThisLocal</h1>
+                <p class="subtitle">Discover real local minority businesses powered by Google</p>
+            </div>
+
+            <div class="controls">
+                <div class="control-row">
+                    <label class="inline" style="flex:1;">
+                        <span>I'm looking for:</span>
+                        <select id="keywordInput" style="flex:1;">
+                            <option value="Black-owned">Black-owned</option>
+                            <option value="Latino-owned">Latino-owned</option>
+                            <option value="Asian-owned">Asian-owned</option>
+                            <option value="Women-owned">Women-owned</option>
+                            <option value="LGBTQ-owned">LGBTQ-owned</option>
+                            <option value="Veteran-owned">Veteran-owned</option>
+                            <option value="Native American-owned">Native American-owned</option>
+                            <option value="minority-owned">Minority-owned</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div id="customSearchRow" class="control-row" style="display: none;">
+                    <label class="inline" style="flex:1;">
+                        <span>Search for:</span>
+                        <input id="customKeywordInput" type="text" placeholder="e.g., pizza, hair salon, coffee shop" />
+                    </label>
+                </div>
+
+                <div class="control-row">
+                    <label class="inline">
+                        <span>Location:</span>
+                        <input id="locationInput" type="text" placeholder="City or ZIP" />
+                    </label>
+                    <button id="useMyLocation" class="button">📍 Use GPS</button>
+                </div>
+
+                <div class="control-row">
+                    <label class="inline">
+                        <span>Category:</span>
+                        <select id="categoryFilter">
+                            <option value="all">All</option>
+                            <option value="Food">Food</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Services">Services</option>
+                            <option value="Beauty">Beauty</option>
+                            <option value="Education">Education</option>
+                            <option value="Health">Health</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </label>
+                </div>
+
+                <button id="searchBtn" class="primary">🔍 Search</button>
+            </div>
+
+            <div id="tab-custom" class="tab-content">
+                <button id="openAddBizModal" class="primary">➕ Add Your Business</button>
+                <ul id="customBusinessList" class="card-list"></ul>
+            </div>
+
+            <!-- Tabs -->
+            <div id="tabs">
+                <button class="tab-btn active" data-tab="Google">Find Results</button>
+                <button class="tab-btn" data-tab="custom">Your Businesses</button>
+            </div>
+
+            <div id="tab-Google" class="tab-content active">
+                <div class="sidebar-section">
+                    <h3>Results (<span id="resultCount">0</span>)</h3>
+                    <ul id="businessList" class="card-list"></ul>
+                    <div id="pagination" class="pagination"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-section about">
+                <h3>About</h3>
+                <p>Discover minority-owned businesses using real data from Google.</p>
+                <p>Email to add a business:
+                    <a href="mailto:tea.why43@gmail.com">tea.why43@gmail.com</a>
+                </p>
+                <p>
+                    <a href="javascript:void(0)" id="openReadmeBtn" class="help-link">
+                        How to Use This App / Help
+                    </a>
+                </p>
+            </div>
+
+            <!-- ReadMe Modal -->
+            <div id="readme-modal"
+                style="display:none; position:fixed; inset:0; justify-content:center; align-items:center; background:rgba(255, 255, 255, 0.5); z-index:1000;">
+                <div id="readme-content"
+                    style="background:#ffffff; padding:20px; border-radius:8px; max-height:80vh; overflow-y:auto; width:90%; max-width:800px; text-align:center;">
+                </div>
+                <button id="close-btn" style="position:absolute; top:10px; right:10px; font-size:20px;">×</button>
+            </div>
+
+            <!-- Add Business Modal -->
+            <div id="addBizModal" class="modal hidden">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <button class="modal-close" id="addBizModalClose" aria-label="Close">×</button>
+                    <div id="addBizModalBody" class="modal-body"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAP -->
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+
+        <button id="mobileSidebarToggle" class="mobile-toggle">☰ Menu</button>
+    </div>
+
+    <!-- Global Modal -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script type="module" src="app.js"></script>
+    <script src="service-worker.js"></script>
+
+    <script type="module" src="FireStore/firebaseActions.js"></script>
+</body>
+
+</html>

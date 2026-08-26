@@ -1,0 +1,16 @@
+{
+  "name": "Find This Local",
+  "short_name": "FindLocal",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f0e6",
+  "theme_color": "#7a5c3d",
+  "description": "Discover minority-owned and local businesses near you.",
+  "icons": [
+    {
+      "src": "FindThisLocalIcons/favicon.ico",
+      "sizes": "48x48 72x72 96x96 128x128 256x256",
+      "type": "image/x-icon"
+    }
+  ]
+}
